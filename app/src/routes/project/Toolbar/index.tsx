@@ -38,14 +38,12 @@ const Toolbar = observer(() => {
                     <HandIcon />
                 </ToggleGroupItem>
                 <ToggleGroupItem
-                    disabled={true}
                     value={EditorMode.INSERT_DIV}
                     aria-label={EditorMode.INSERT_DIV + ' Mode'}
                 >
                     <SquareIcon />
                 </ToggleGroupItem>
                 <ToggleGroupItem
-                    disabled={true}
                     value={EditorMode.INSERT_TEXT}
                     aria-label={EditorMode.INSERT_TEXT + ' Mode'}
                 >

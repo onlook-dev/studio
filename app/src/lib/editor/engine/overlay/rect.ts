@@ -64,6 +64,17 @@ export class HoverRect extends RectImpl {
     }
 }
 
+export class InsertRect extends RectImpl {
+    constructor() {
+        super();
+        this.rectElement.setAttribute('stroke-width', '1');
+    }
+
+    render(rectDimensions: RectDimensions) {
+        super.render(rectDimensions);
+    }
+}
+
 export class ClickRect extends RectImpl {
     constructor() {
         super();
@@ -299,18 +310,6 @@ export class ParentRect extends RectImpl {
         super();
         this.rectElement.setAttribute('stroke-width', '1');
         this.rectElement.setAttribute('stroke-dasharray', '5');
-    }
-
-    render(rect: RectDimensions) {
-        super.render(rect);
-    }
-}
-
-export class EditRect extends RectImpl {
-    constructor() {
-        super();
-        this.rectElement.setAttribute('stroke', '#00FF94');
-        this.rectElement.setAttribute('stroke-width', '2');
     }
 
     render(rect: RectDimensions) {

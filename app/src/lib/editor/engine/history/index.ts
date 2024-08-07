@@ -15,6 +15,20 @@ function undoAction(action: Action): Action {
                 style: action.style,
                 change: reverse(action.change),
             };
+        case 'insert-element':
+            return {
+                type: 'remove-element',
+                targets: action.targets,
+                position: action.position,
+                element: action.element,
+            };
+        case 'remove-element':
+            return {
+                type: 'insert-element',
+                targets: action.targets,
+                position: action.position,
+                element: action.element,
+            };
     }
 }
 
@@ -89,12 +103,15 @@ export class HistoryManager {
         }
 
         this.undoStack.push(action);
-        sendAnalytics('edit action', {
-            type: action.type,
-            style: action.style,
-            new_value: action.change.updated,
-            original_value: action.change.original,
-        });
+
+        if (action.type === 'update-style') {
+            sendAnalytics('edit action', {
+                type: action.type,
+                style: action.style,
+                new_value: action.change.updated,
+                original_value: action.change.original,
+            });
+        }
     };
 
     undo = (): Action | null => {

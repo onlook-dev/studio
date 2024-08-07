@@ -1,39 +1,37 @@
-import { ClickRect, EditRect, HoverRect, ParentRect } from './rect';
+import { ClickRect, HoverRect, InsertRect, ParentRect } from './rect';
 import { querySelectorCommand } from '/common/helpers';
 
 export class OverlayManager {
     overlayContainer: HTMLElement | undefined;
     hoverRect: HoverRect;
+    insertRect: InsertRect;
     clickedRects: ClickRect[];
     parentRect: ParentRect;
-    editRect: EditRect;
     scrollPosition: { x: number; y: number } = { x: 0, y: 0 };
 
     constructor() {
         this.hoverRect = new HoverRect();
+        this.insertRect = new InsertRect();
         this.parentRect = new ParentRect();
-        this.editRect = new EditRect();
         this.clickedRects = [];
-
-        this.initializeRects();
         this.bindMethods();
     }
 
-    initializeRects = () => {
+    setOverlayContainer = (container: HTMLElement) => {
+        this.overlayContainer = container;
         this.appendRectToPopover(this.hoverRect.element);
+        this.appendRectToPopover(this.insertRect.element);
         this.appendRectToPopover(this.parentRect.element);
-        this.appendRectToPopover(this.editRect.element);
     };
 
     bindMethods = () => {
         this.setOverlayContainer = this.setOverlayContainer.bind(this);
         this.updateHoverRect = this.updateHoverRect.bind(this);
+        this.updateInsertRect = this.updateInsertRect.bind(this);
         this.updateParentRect = this.updateParentRect.bind(this);
-        this.updateEditRect = this.updateEditRect.bind(this);
         this.hideHoverRect = this.hideHoverRect.bind(this);
         this.showHoverRect = this.showHoverRect.bind(this);
         this.removeHoverRect = this.removeHoverRect.bind(this);
-        this.removeEditRect = this.removeEditRect.bind(this);
         this.removeClickedRects = this.removeClickedRects.bind(this);
         this.clear = this.clear.bind(this);
     };
@@ -82,13 +80,6 @@ export class OverlayManager {
         return adjustedRect;
     }
 
-    setOverlayContainer = (container: HTMLElement) => {
-        this.overlayContainer = container;
-        this.appendRectToPopover(this.hoverRect.element);
-        this.appendRectToPopover(this.parentRect.element);
-        this.appendRectToPopover(this.editRect.element);
-    };
-
     appendRectToPopover = (rect: HTMLElement) => {
         if (this.overlayContainer) {
             this.overlayContainer.appendChild(rect);
@@ -99,7 +90,6 @@ export class OverlayManager {
         this.removeParentRect();
         this.removeHoverRect();
         this.removeClickedRects();
-        this.removeEditRect();
     };
 
     addClickRect = (rect: DOMRect, style: Record<string, string> | CSSStyleDeclaration) => {
@@ -128,12 +118,8 @@ export class OverlayManager {
         this.hoverRect.render(rect);
     };
 
-    updateEditRect = (el: HTMLElement) => {
-        if (!el) {
-            return;
-        }
-        const rect = el.getBoundingClientRect();
-        this.editRect.render(rect);
+    updateInsertRect = (rect: DOMRect) => {
+        this.insertRect.render(rect);
     };
 
     hideHoverRect = () => {
@@ -148,8 +134,8 @@ export class OverlayManager {
         this.hoverRect.render({ width: 0, height: 0, top: 0, left: 0 });
     };
 
-    removeEditRect = () => {
-        this.editRect.render({ width: 0, height: 0, top: 0, left: 0 });
+    removeInsertRect = () => {
+        this.insertRect.render({ width: 0, height: 0, top: 0, left: 0 });
     };
 
     removeClickedRects = () => {

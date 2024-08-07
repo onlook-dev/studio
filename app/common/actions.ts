@@ -15,4 +15,22 @@ export interface UpdateStyleAction {
     change: Change<string>;
 }
 
-export type Action = UpdateStyleAction;
+export interface ElementChange {
+    element: string;
+}
+
+export interface InsertElementAction {
+    type: 'insert-element';
+    targets: Array<ActionTarget>;
+    position: 'before' | 'after' | 'prepend' | 'append' | number;
+    element: string;
+}
+
+export interface RemoveElementAction {
+    type: 'remove-element';
+    targets: Array<ActionTarget>;
+    position: 'before' | 'after' | 'prepend' | 'append' | number;
+    element: string;
+}
+
+export type Action = UpdateStyleAction | InsertElementAction | RemoveElementAction;
