@@ -89,7 +89,7 @@ const TextInput = ({ elementStyle, updateElementStyle, inputWidth = 'w-full' }: 
     return (
         <input
             type="text"
-            className={`${inputWidth} p-[6px] text-xs px-2 rounded border-none text-text bg-bg text-start focus:outline-none focus:ring-0 appearance-none`}
+            className={`${inputWidth} p-[6px] text-xs px-2 rounded border-none text-active bg-bg text-start focus:outline-none focus:ring-0 appearance-none`}
             placeholder="--"
             value={localValue}
             onChange={handleInput}

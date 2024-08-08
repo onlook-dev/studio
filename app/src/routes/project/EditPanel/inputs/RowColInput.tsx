@@ -54,7 +54,7 @@ function RowColInput({ elementStyle, updateElementStyle, inputWidth = 'w-full' }
     return (
         <input
             type="text"
-            className={`${inputWidth} p-[6px] text-xs px-2 rounded border-none text-text bg-bg text-start focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+            className={`${inputWidth} p-[6px] text-xs px-2 rounded border-none text-active bg-bg text-start focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
             placeholder="--"
             value={value}
             onInput={handleInput}

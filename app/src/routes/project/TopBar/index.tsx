@@ -58,7 +58,7 @@ const EditorTopBar = observer(() => {
                 className=""
                 onClick={() => !disableClick && viewSource(instance || root)}
             >
-                <div className="text-white h-3 w-3 mr-1">
+                <div className="text-default h-3 w-3 mr-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0,0,256,256">
                         <g fill="#ffffff">
                             <g transform="scale(10.66667,10.66667)">

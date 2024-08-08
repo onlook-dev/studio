@@ -17,7 +17,7 @@ const Toolbar = observer(() => {
     return (
         <div
             className={clsx(
-                'border p-1 flex bg-black/80 backdrop-blur rounded-lg shadow items-center justify-center',
+                'border p-1 flex bg-black/80 backdrop-blur rounded shadow items-center justify-center',
                 editorEngine.mode === EditorMode.INTERACT ? 'hidden' : 'visible',
             )}
         >

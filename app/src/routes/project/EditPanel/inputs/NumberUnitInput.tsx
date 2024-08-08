@@ -62,7 +62,7 @@ const NumberUnitInput = ({ elementStyle, updateElementStyle }: Props) => {
                     setNumberInput(e.currentTarget.value);
                     sendStyleUpdate(e.currentTarget.value, unitInputVal);
                 }}
-                className="w-full p-[6px] px-2 rounded border-none text-text bg-bg text-start focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-full p-[6px] px-2 rounded border-none text-active bg-bg text-start focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
         );
     }
@@ -72,7 +72,7 @@ const NumberUnitInput = ({ elementStyle, updateElementStyle }: Props) => {
             <div className="relative w-full">
                 <select
                     value={unitInputVal}
-                    className="p-[6px] w-full px-2 rounded-sm border-none text-text bg-bg text-start appearance-none focus:outline-none focus:ring-0"
+                    className="p-[6px] w-full px-2 rounded border-none text-active bg-bg text-start appearance-none focus:outline-none focus:ring-0"
                     onChange={(e) => {
                         setNumberInput(e.target.value);
                         sendStyleUpdate(numberInputVal, e.target.value);
