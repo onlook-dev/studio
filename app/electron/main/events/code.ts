@@ -3,7 +3,9 @@ import { openInIde, pickDirectory, readCodeBlock, readCodeBlocks, writeCode } fr
 import { getTemplateNodeClass } from '../code/classes';
 import { extractComponentsFromDirectory } from '../code/components';
 import { getCodeDiffs } from '../code/diff';
+import { readFile } from '../code/files';
 import { getTemplateNodeChild } from '../code/templateNode';
+import watcher from '../code/watcher';
 import { MainChannels } from '/common/constants';
 import { CodeDiff, CodeDiffRequest } from '/common/models/code';
 import { TemplateNode } from '/common/models/element/templateNode';
@@ -18,6 +20,24 @@ export function listenForCodeMessages() {
         const templateNode = args as TemplateNode;
         return readCodeBlock(templateNode);
     });
+
+    ipcMain.handle(MainChannels.READ_FILE_CONTENT, (e: Electron.IpcMainInvokeEvent, args) => {
+        const filePath = args as string;
+        return readFile(filePath);
+    });
+
+    ipcMain.handle(MainChannels.WATCH_FILE_CONTENT, (e: Electron.IpcMainInvokeEvent, args) => {
+        const { path, listenerId } = args as { path: string; listenerId: string };
+        return watcher.watchFile(path, listenerId, e.sender);
+    });
+
+    ipcMain.handle(
+        MainChannels.CANCEL_WATCH_FILE_CONTENT,
+        (e: Electron.IpcMainInvokeEvent, args) => {
+            const { listenerId } = args as { listenerId: string };
+            watcher.cancelWatch(listenerId);
+        },
+    );
 
     ipcMain.handle(MainChannels.GET_CODE_BLOCKS, (e: Electron.IpcMainInvokeEvent, args) => {
         const templateNodes = args as TemplateNode[];

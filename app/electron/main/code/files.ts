@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs';
+import { promises as fs, watch } from 'fs';
 import * as path from 'path';
 import prettier from 'prettier';
 
@@ -21,6 +21,21 @@ export async function writeFile(filePath: string, content: string): Promise<void
         console.error('Error writing to file:', error);
         throw error;
     }
+}
+
+export function watchFile(
+    filePath: string,
+    callback: (eventType: string, filename: string) => void,
+): () => void {
+    const fullPath = path.resolve(filePath);
+    const watcher = watch(fullPath, (eventType, filename) => {
+        if (filename) {
+            callback(eventType, filename);
+        }
+    });
+    return () => {
+        watcher.close();
+    };
 }
 
 export async function formatContent(filePath: string, content: string): Promise<string> {
