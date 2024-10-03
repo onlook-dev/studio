@@ -11,6 +11,7 @@ import ResizeHandles from './ResizeHandles';
 import { Links } from '/common/constants';
 import { isOnlookInDoc } from '/common/helpers';
 import { FrameSettings } from '/common/models/project';
+import Canvas from '../Canvas';
 
 const Frame = observer(
     ({
@@ -110,7 +111,7 @@ const Frame = observer(
         }
 
         return (
-            <div className="flex flex-col space-y-4">
+            <div className="relative">
                 <BrowserControls
                     webviewRef={webviewRef}
                     webviewSrc={webviewSrc}
@@ -120,57 +121,62 @@ const Frame = observer(
                     setHovered={setHovered}
                     onlookEnabled={onlookEnabled}
                 />
-                <div className="relative">
-                    <ResizeHandles
-                        webviewRef={webviewRef}
-                        webviewSize={webviewSize}
-                        setWebviewSize={setWebviewSize}
-                    />
-                    <webview
-                        id={settings.id}
-                        ref={webviewRef}
-                        className={clsx(
-                            'w-[96rem] h-[60rem] backdrop-blur-sm transition outline outline-4',
-                            domFailed ? 'bg-transparent' : 'bg-white',
-                            focused
-                                ? 'outline-blue-300'
-                                : selected
-                                  ? 'outline-teal-300'
-                                  : 'outline-transparent',
-                        )}
-                        src={settings.url}
-                        preload={`file://${window.env.WEBVIEW_PRELOAD_PATH}`}
-                        allowpopups={'true' as any}
-                        style={{
-                            width: webviewSize.width,
-                            height: webviewSize.height,
-                        }}
-                    ></webview>
-                    <GestureScreen webviewRef={webviewRef} setHovered={setHovered} />
-                    {domFailed && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-gray-200/40 via-gray-500/40 to-gray-600/40 border-gray-500 border-[0.5px] space-y-4 rounded-xl">
-                            <p className="text-active text-title1 text-center">
-                                {'Your React app is not running'}
-                            </p>
-                            <p className="text-text text-title2 leading-normal text-center">
-                                {`Make sure that your app is running in your terminal`}
-                                <br />
-                                {`and that you're pointing the above browser URL to the correct location`}
-                            </p>
-                            <Button
-                                variant={'link'}
-                                size={'lg'}
-                                className="text-title2"
-                                onClick={() => {
-                                    window.open(Links.USAGE_DOCS, '_blank');
+                <Canvas>
+                    <div className="flex flex-col space-y-4">
+                        <div className="relative">
+                            <ResizeHandles
+                                webviewRef={webviewRef}
+                                webviewSize={webviewSize}
+                                setWebviewSize={setWebviewSize}
+                            />
+                            <webview
+                                id={settings.id}
+                                ref={webviewRef}
+                                className={clsx(
+                                    'w-[96rem] h-[60rem] backdrop-blur-sm transition outline outline-4',
+                                    domFailed ? 'bg-transparent' : 'bg-white',
+                                    focused
+                                        ? 'outline-blue-300'
+                                        : selected
+                                          ? 'outline-teal-300'
+                                          : 'outline-transparent',
+                                )}
+                                src={settings.url}
+                                preload={`file://${window.env.WEBVIEW_PRELOAD_PATH}`}
+                                allowpopups={'true' as any}
+                                style={{
+                                    width: webviewSize.width,
+                                    height: webviewSize.height,
+                                    marginTop: `${editorEngine.canvas.scale * 2}rem`,
                                 }}
-                            >
-                                Read the get started guide
-                                <ExternalLinkIcon className="ml-2 w-6 h-6" />
-                            </Button>
+                            ></webview>
+                            <GestureScreen webviewRef={webviewRef} setHovered={setHovered} />
+                            {domFailed && (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-gray-200/40 via-gray-500/40 to-gray-600/40 border-gray-500 border-[0.5px] space-y-4 rounded-xl">
+                                    <p className="text-active text-title1 text-center">
+                                        {'Your React app is not running'}
+                                    </p>
+                                    <p className="text-text text-title2 leading-normal text-center">
+                                        {`Make sure that your app is running in your terminal`}
+                                        <br />
+                                        {`and that you're pointing the above browser URL to the correct location`}
+                                    </p>
+                                    <Button
+                                        variant={'link'}
+                                        size={'lg'}
+                                        className="text-title2"
+                                        onClick={() => {
+                                            window.open(Links.USAGE_DOCS, '_blank');
+                                        }}
+                                    >
+                                        Read the get started guide
+                                        <ExternalLinkIcon className="ml-2 w-6 h-6" />
+                                    </Button>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
+                    </div>
+                </Canvas>
             </div>
         );
     },
