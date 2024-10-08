@@ -1,4 +1,5 @@
 import { InsertPos } from './models';
+import { CopiedElement } from './models/element/domAction';
 
 export interface Change<T> {
     updated: T;
@@ -67,9 +68,17 @@ export interface EditTextAction {
     newContent: string;
 }
 
+export interface PasteElementAction {
+    type: 'paste-element';
+    targets: Array<ActionTargetWithSelector>;
+    location: ActionElementLocation;
+    elements: CopiedElement[];
+}
+
 export type Action =
     | UpdateStyleAction
     | InsertElementAction
     | RemoveElementAction
     | MoveElementAction
-    | EditTextAction;
+    | EditTextAction
+    | PasteElementAction;

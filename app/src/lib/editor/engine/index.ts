@@ -6,6 +6,7 @@ import { ActionManager } from './action';
 import { AstManager } from './ast';
 import { CanvasManager } from './canvas';
 import { CodeManager } from './code';
+import { CopyManager } from './copy';
 import { DomManager } from './dom';
 import { ElementManager } from './element';
 import { HistoryManager } from './history';
@@ -44,6 +45,12 @@ export class EditorEngine {
     );
     private moveManager: MoveManager = new MoveManager(this.overlayManager, this.historyManager);
     private styleManager: StyleManager = new StyleManager(this.actionManager, this.elementManager);
+    private copyManager: CopyManager = new CopyManager(
+        this.elementManager,
+        this.webviewManager,
+        this.astManager,
+        this.actionManager,
+    );
     private textEditingManager: TextEditingManager = new TextEditingManager(
         this.overlayManager,
         this.historyManager,
@@ -53,7 +60,6 @@ export class EditorEngine {
         this.webviewManager,
         this.astManager,
         this.historyManager,
-        this.elementManager,
     );
 
     constructor(private projectsManager: ProjectsManager) {
@@ -105,6 +111,9 @@ export class EditorEngine {
     }
     get text() {
         return this.textEditingManager;
+    }
+    get copy() {
+        return this.copyManager;
     }
     set mode(mode: EditorMode) {
         this.editorMode = mode;

@@ -21,7 +21,6 @@ export class CodeManager {
         private webviewManager: WebviewManager,
         private astManager: AstManager,
         private historyManager: HistoryManager,
-        private elementManager: ElementManager,
     ) {
         makeAutoObservable(this);
         this.listenForUndoChange();

@@ -29,6 +29,7 @@ export enum WebviewChannels {
     MOVE_ELEMENT = 'move-element',
     EDIT_ELEMENT_TEXT = 'edit-element-text',
     CLEAN_AFTER_WRITE_TO_CODE = 'clean-after-write',
+    PASTE_ELEMENT = 'paste-element',
 
     // From Webview
     ELEMENT_INSERTED = 'element-inserted',

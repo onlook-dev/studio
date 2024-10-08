@@ -9,6 +9,11 @@ export class Hotkey {
     static readonly INTERACT = new Hotkey('i', 'Interact');
     static readonly INSERT_DIV = new Hotkey('r', 'Insert Div');
     static readonly INSERT_TEXT = new Hotkey('t', 'Insert Text');
+    static readonly COPY = new Hotkey('mod+c', 'Copy');
+    static readonly PASTE = new Hotkey('mod+v', 'Paste');
+    static readonly CUT = new Hotkey('mod+x', 'Cut');
+    static readonly DUPLICATE = new Hotkey('mod+d', 'Duplicate');
+    static readonly ENTER = new Hotkey('enter', 'Edit Text');
     static readonly BACKSPACE = new Hotkey('backspace', 'Delete Div');
     static readonly DELETE = new Hotkey('delete', 'Delete Div');
 

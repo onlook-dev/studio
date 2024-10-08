@@ -43,3 +43,8 @@ export interface InsertedElement extends DomActionElement {
     attributes: Record<string, string>;
     textContent?: string;
 }
+
+export interface CopiedElement {
+    selector: string;
+    htmlContent: string;
+}
