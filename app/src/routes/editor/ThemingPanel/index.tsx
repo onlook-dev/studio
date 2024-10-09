@@ -2,37 +2,35 @@ import { useEditorEngine } from '@/components/Context';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EditorMode } from '@/lib/models';
-import { LayersIcon, PinLeftIcon } from '@radix-ui/react-icons';
+import { BlendingModeIcon, PinLeftIcon } from '@radix-ui/react-icons';
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
-import ComponentsTab from './ComponentsTab';
-import LayersTab from './LayersTab';
+import AssetsTab from './AssetsTab';
+import VariablesTab from './VariablesTab';
 import { capitalizeFirstLetter } from '/common/helpers';
 
-const COMPONENT_DISCOVERY_ENABLED = false;
-
-interface LayersPanelProps {
+interface ThemingPanelProps {
     openPanels: ('layers' | 'theming')[];
     setOpenPanels: React.Dispatch<React.SetStateAction<('layers' | 'theming')[]>>;
 }
 
-const LayersPanel = observer(({ openPanels, setOpenPanels }: LayersPanelProps) => {
+const ThemingPanel = observer(({ openPanels, setOpenPanels }: ThemingPanelProps) => {
     const editorEngine = useEditorEngine();
     enum TabValue {
-        LAYERS = 'layers',
-        COMPONENTS = 'components',
+        ASSETS = 'assets',
+        VARIABLES = 'variables',
     }
-    const selectedTab: string = TabValue.LAYERS;
-    const [isOpen, setIsOpen] = useState(true);
+    const selectedTab: string = TabValue.ASSETS;
+    const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(() => setIsOpen(openPanels.includes('layers')), [openPanels]);
+    useEffect(() => setIsOpen(openPanels.includes('theming')), [openPanels]);
 
     const togglePanelOpen = () => {
         if (isOpen) {
-            setOpenPanels(openPanels.filter((panel) => panel !== 'layers'));
+            setOpenPanels(openPanels.filter((panel) => panel !== 'theming'));
         } else {
-            setOpenPanels([...openPanels, 'layers']);
+            setOpenPanels([...openPanels, 'theming']);
         }
     };
 
@@ -40,18 +38,18 @@ const LayersPanel = observer(({ openPanels, setOpenPanels }: LayersPanelProps) =
         return (
             <Tabs defaultValue={selectedTab}>
                 <TabsList className="bg-transparent w-full gap-2 select-none justify-start pr-1 pl-3 pt-2">
-                    <LayersIcon />
+                    <BlendingModeIcon />
                     <TabsTrigger
                         className="bg-transparent py-2 px-1 text-xs hover:text-text-hover"
-                        value={TabValue.LAYERS}
+                        value={TabValue.ASSETS}
                     >
-                        {capitalizeFirstLetter(TabValue.LAYERS)}
+                        {capitalizeFirstLetter(TabValue.ASSETS)}
                     </TabsTrigger>
                     <TabsTrigger
                         className="bg-transparent py-2 px-1 text-xs hover:text-text-hover"
-                        value={TabValue.COMPONENTS}
+                        value={TabValue.VARIABLES}
                     >
-                        {capitalizeFirstLetter(TabValue.COMPONENTS)}
+                        {capitalizeFirstLetter(TabValue.VARIABLES)}
                     </TabsTrigger>
                     <div className="flex-grow"></div>
                     <button
@@ -68,15 +66,11 @@ const LayersPanel = observer(({ openPanels, setOpenPanels }: LayersPanelProps) =
                         openPanels.length > 1 ? 'h-[calc(48vh-4.5rem)]' : 'h-[calc(93vh-7.5rem)]',
                     )}
                 >
-                    <TabsContent value={TabValue.LAYERS}>
-                        <LayersTab />
+                    <TabsContent value={TabValue.ASSETS}>
+                        <AssetsTab />
                     </TabsContent>
-                    <TabsContent value={TabValue.COMPONENTS}>
-                        {COMPONENT_DISCOVERY_ENABLED ? (
-                            <ComponentsTab components={editorEngine.projectInfo.components} />
-                        ) : (
-                            <div className="w-full pt-96 text-center opacity-70">Coming soon</div>
-                        )}
+                    <TabsContent value={TabValue.VARIABLES}>
+                        <VariablesTab />
                     </TabsContent>
                 </div>
             </Tabs>
@@ -100,7 +94,7 @@ const LayersPanel = observer(({ openPanels, setOpenPanels }: LayersPanelProps) =
                     className="w-full h-full flex justify-center items-center text-white hover:text-text"
                     onClick={togglePanelOpen}
                 >
-                    <LayersIcon className="z-51" />
+                    <BlendingModeIcon className="z-51" />
                 </div>
             )}
             <div
@@ -115,4 +109,4 @@ const LayersPanel = observer(({ openPanels, setOpenPanels }: LayersPanelProps) =
     );
 });
 
-export default LayersPanel;
+export default ThemingPanel;
