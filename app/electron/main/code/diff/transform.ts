@@ -12,6 +12,7 @@ import {
     MovedElementWithTemplate,
 } from '/common/models/element/domAction';
 import { TemplateNode } from '/common/models/element/templateNode';
+import { assertNever } from '/common/helpers';
 
 export function transformAst(
     ast: t.File,
@@ -36,7 +37,11 @@ export function transformAst(
                 if (codeDiffRequest.textContent !== undefined) {
                     updateNodeTextContent(path.node, codeDiffRequest.textContent);
                 }
-                const structureChangeElements = getStructureChangeElements(codeDiffRequest);
+                const structureChangeElements = [
+                    ...codeDiffRequest.insertedElements,
+                    ...codeDiffRequest.movedElements,
+                    ...codeDiffRequest.removedElements,
+                ];
                 applyStructureChanges(path, filepath, structureChangeElements);
             }
         },
@@ -58,20 +63,25 @@ function hashTemplateNode(node: TemplateNode): string {
     return `${node.path}:${node.startTag.start.line}:${node.startTag.start.column}:${node.startTag.end.line}:${node.startTag.end.column}`;
 }
 
-function getStructureChangeElements(request: CodeDiffRequest): DomActionElement[] {
-    return [...request.insertedElements, ...request.movedElements];
-}
-
 function applyStructureChanges(
     path: NodePath<t.JSXElement>,
     filepath: string,
     elements: DomActionElement[],
 ): void {
     for (const element of elements) {
-        if (element.type === DomActionType.MOVE) {
-            moveElementInNode(path, filepath, element as MovedElementWithTemplate);
-        } else if (element.type === DomActionType.INSERT) {
-            insertElementToNode(path, element as InsertedElement);
+        switch (element.type) {
+            case DomActionType.MOVE:
+                moveElementInNode(path, filepath, element as MovedElementWithTemplate);
+                break;
+            case DomActionType.INSERT:
+                insertElementToNode(path, element as InsertedElement);
+                break;
+            case DomActionType.REMOVE:
+                console.log('Remove', element);
+                removeElementFromNode(path, element);
+                break;
+            default:
+                assertNever(element);
         }
     }
 }
@@ -111,6 +121,52 @@ function insertElementToNode(path: NodePath<t.JSXElement>, element: InsertedElem
             console.error(`Unhandled position: ${element.location.position}`);
             path.node.children.push(newElement);
             break;
+    }
+
+    path.stop();
+}
+
+function removeElementFromNode(path: NodePath<t.JSXElement>, element: DomActionElement): void {
+    const children = path.node.children;
+    const jsxElements = children.filter(
+        (child) => t.isJSXElement(child) || t.isJSXFragment(child),
+    ) as Array<t.JSXElement | t.JSXFragment>;
+
+    console.log('Remove', jsxElements);
+
+    let elementToRemoveIndex: number;
+
+    switch (element.location.position) {
+        case InsertPos.INDEX:
+            if (element.location.index !== undefined) {
+                elementToRemoveIndex = Math.min(element.location.index, jsxElements.length - 1);
+            } else {
+                console.error('Invalid index: undefined');
+                return;
+            }
+            break;
+        case InsertPos.APPEND:
+            elementToRemoveIndex = jsxElements.length - 1;
+            break;
+        case InsertPos.PREPEND:
+            elementToRemoveIndex = 0;
+            break;
+        default:
+            console.error(`Unhandled position: ${element.location.position}`);
+            return;
+    }
+
+    if (elementToRemoveIndex >= 0 && elementToRemoveIndex < jsxElements.length) {
+        const elementToRemove = jsxElements[elementToRemoveIndex];
+        const indexInChildren = children.indexOf(elementToRemove);
+
+        if (indexInChildren !== -1) {
+            children.splice(indexInChildren, 1);
+        } else {
+            console.error('Element to be removed not found in children');
+        }
+    } else {
+        console.error('Invalid element index for removal');
     }
 
     path.stop();

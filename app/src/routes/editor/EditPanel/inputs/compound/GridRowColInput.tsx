@@ -30,6 +30,8 @@ const GridRowColInput = observer(({ elementStyle }: { elementStyle: SingleStyle 
             placeholder="--"
             value={value}
             onInput={handleInput}
+            onFocus={editorEngine.history.startTransaction}
+            onBlur={editorEngine.history.commitTransaction}
         />
     );
 });

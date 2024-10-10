@@ -1,6 +1,8 @@
 import { debounce } from 'lodash';
 import { makeAutoObservable } from 'mobx';
 import { EditorEngine } from '..';
+import { RemoveElementAction } from '/common/actions';
+import { escapeSelector } from '/common/helpers';
 import { DomElement, WebViewElement } from '/common/models/element';
 
 export class ElementManager {
@@ -140,4 +142,35 @@ export class ElementManager {
         });
     }
     private debouncedRefreshClickedElements = debounce(this.undebouncedRefreshClickedElements, 10);
+
+    async delete() {
+        const selected = this.selected;
+        if (selected.length === 0) {
+            return;
+        }
+        const selectedEl: WebViewElement = selected[0];
+        const webviewId = selectedEl.webviewId;
+        const webview = this.editorEngine.webviews.getWebview(webviewId);
+        if (!webview) {
+            return;
+        }
+
+        const removeAction = (await webview.executeJavaScript(
+            `window.api?.getRemoveActionFromSelector('${escapeSelector(selectedEl.selector)}', '${webviewId}')`,
+        )) as RemoveElementAction | undefined;
+        if (!removeAction) {
+            console.error('Remove action not found');
+            return;
+        }
+        const templateNode =
+            this.editorEngine.ast.getInstance(selectedEl.selector) ||
+            this.editorEngine.ast.getRoot(selectedEl.selector);
+        const codeBlock = await this.editorEngine.code.getCodeBlock(templateNode);
+        if (!codeBlock) {
+            console.error('Code block not found');
+            return;
+        }
+        removeAction.codeBlock = codeBlock;
+        this.editorEngine.action.run(removeAction);
+    }
 }

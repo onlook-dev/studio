@@ -27,6 +27,7 @@ export const handleNumberInputKeyDown = (
 ) => {
     if (e.key === 'Enter') {
         sendStyleUpdate(value);
+        e.currentTarget.blur();
         return;
     }
 

@@ -89,6 +89,8 @@ const AutoLayoutInput = observer(({ elementStyle }: { elementStyle: SingleStyle 
                             sendStyleUpdate,
                         )
                     }
+                    onFocus={editorEngine.history.startTransaction}
+                    onBlur={editorEngine.history.commitTransaction}
                 />
                 <div className="relative w-16">
                     <select

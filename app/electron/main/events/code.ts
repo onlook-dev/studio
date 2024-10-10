@@ -3,11 +3,11 @@ import { openInIde, pickDirectory, readCodeBlock, readCodeBlocks, writeCode } fr
 import { getTemplateNodeClass } from '../code/classes';
 import { extractComponentsFromDirectory } from '../code/components';
 import { getCodeDiffs } from '../code/diff';
+import { cleanMoveKeys } from '../code/moveKeys';
 import { getTemplateNodeChild } from '../code/templateNode';
 import { MainChannels } from '/common/constants';
 import { CodeDiff, CodeDiffRequest } from '/common/models/code';
 import { TemplateNode } from '/common/models/element/templateNode';
-import { cleanMoveKeys } from '../code/moveKeys';
 
 export function listenForCodeMessages() {
     ipcMain.handle(MainChannels.VIEW_SOURCE_CODE, (e: Electron.IpcMainInvokeEvent, args) => {
@@ -37,7 +37,7 @@ export function listenForCodeMessages() {
     });
 
     ipcMain.handle(MainChannels.GET_CODE_DIFFS, (e: Electron.IpcMainInvokeEvent, args) => {
-        const requests = args as Map<TemplateNode, CodeDiffRequest>;
+        const requests = args as CodeDiffRequest[];
         return getCodeDiffs(requests);
     });
 

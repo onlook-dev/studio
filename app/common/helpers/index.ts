@@ -97,3 +97,7 @@ export function timeSince(date: Date): string {
     }
     return Math.floor(seconds) + 's';
 }
+
+export function assertNever(n: never): never {
+    throw new Error(`Expected \`never\`, found: ${JSON.stringify(n)}`);
+}

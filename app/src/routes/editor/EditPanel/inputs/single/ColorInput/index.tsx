@@ -60,6 +60,8 @@ const ColorInput = observer(
                         const formattedColor = formatColorInput(event.target.value);
                         sendStyleUpdate(formattedColor);
                     }}
+                    onFocus={editorEngine.history.startTransaction}
+                    onBlur={editorEngine.history.commitTransaction}
                 />
             );
         }

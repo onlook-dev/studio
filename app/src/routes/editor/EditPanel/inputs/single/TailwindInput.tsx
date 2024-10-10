@@ -47,17 +47,16 @@ const TailwindInput = observer(() => {
     }
 
     const createCodeDiffRequest = async (templateNode: TemplateNode, className: string) => {
-        const codeDiffRequest: CodeDiffRequest = {
+        const request: CodeDiffRequest = {
             templateNode,
             selector: editorEngine.elements.selected[0].selector,
             attributes: { className },
             insertedElements: [],
             movedElements: [],
+            removedElements: [],
             overrideClasses: true,
         };
-        const codeDiffMap = new Map<TemplateNode, CodeDiffRequest>();
-        codeDiffMap.set(templateNode, codeDiffRequest);
-        const codeDiffs = await editorEngine.code.getCodeDiff(codeDiffMap);
+        const codeDiffs = await editorEngine.code.getCodeDiff([request]);
         const res = await window.api.invoke(MainChannels.WRITE_CODE_BLOCKS, codeDiffs);
 
         if (res) {

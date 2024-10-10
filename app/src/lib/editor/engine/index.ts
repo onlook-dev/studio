@@ -156,35 +156,6 @@ export class EditorEngine {
         this.text.start(domEl, webview);
     }
 
-    async deleteSelectedElement() {
-        const selected = this.elements.selected;
-        if (selected.length === 0) {
-            return;
-        }
-        const selectedEl: WebViewElement = selected[0];
-        const webviewId = selectedEl.webviewId;
-        const webview = this.webviews.getWebview(webviewId);
-        if (!webview) {
-            return;
-        }
-
-        const isElementInserted = await webview.executeJavaScript(
-            `window.api?.isElementInserted('${escapeSelector(selectedEl.selector)}')`,
-        );
-
-        if (isElementInserted) {
-            const removeAction = (await webview.executeJavaScript(
-                `window.api?.getRemoveActionFromSelector('${escapeSelector(selectedEl.selector)}', '${webviewId}')`,
-            )) as RemoveElementAction | undefined;
-            if (!removeAction) {
-                return;
-            }
-            this.action.run(removeAction);
-        } else {
-            this.style.updateElementStyle('display', 'none');
-        }
-    }
-
     async takeScreenshot(name: string): Promise<string | null> {
         const webview = this.webviews.webviews.values().next().value?.webview;
         if (!webview) {

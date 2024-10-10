@@ -50,32 +50,29 @@ const NestedInputs = observer(({ compoundStyle }: { compoundStyle: CompoundStyle
     };
 
     const onTopValueChanged = (key: string, value: string) => {
-        overrideChildrenStyles();
+        overrideChildrenStyles(value);
     };
 
     const handleToggleGroupChange = (value: 'true' | 'false') => {
         setShowGroup(value === 'true');
 
         if (value === 'false') {
-            overrideChildrenStyles();
+            const styleRecord = editorEngine.style.selectedStyle;
+            if (!styleRecord) {
+                return;
+            }
+            const topValue = compoundStyle.head.getValue(styleRecord.styles);
+            const topValueSplit = topValue.split(' ')[0] || '';
+            editorEngine.style.updateElementStyle(compoundStyle.head.key, topValueSplit);
+
+            overrideChildrenStyles(topValueSplit);
         }
     };
 
-    const overrideChildrenStyles = () => {
-        const styleRecord = editorEngine.style.selectedStyle;
-        if (!styleRecord) {
-            return;
-        }
-
-        const topValue = compoundStyle.head.getValue(styleRecord.styles);
-        const topValueSplit = topValue.split(' ')[0] || '';
-
-        editorEngine.history.startTransaction();
+    const overrideChildrenStyles = (newValue: string) => {
         compoundStyle.children.forEach((elementStyle) => {
-            editorEngine.style.updateElementStyle(elementStyle.key, topValueSplit);
+            editorEngine.style.updateStyleNoAction(elementStyle.key, newValue);
         });
-
-        editorEngine.history.commitTransaction();
     };
 
     function renderTopInput() {

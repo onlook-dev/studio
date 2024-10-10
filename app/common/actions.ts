@@ -48,6 +48,7 @@ export interface InsertElementAction {
     element: ActionElement;
     styles: Record<string, string>;
     editText?: boolean;
+    codeBlock?: string;
 }
 
 export interface RemoveElementAction {
@@ -56,6 +57,7 @@ export interface RemoveElementAction {
     location: ActionElementLocation;
     element: ActionElement;
     styles: Record<string, string>;
+    codeBlock?: string;
 }
 
 export interface MoveElementAction {

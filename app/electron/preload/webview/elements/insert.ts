@@ -46,10 +46,7 @@ export function insertElement(
         return;
     }
 
-    const newEl = document.createElement(element.tagName);
-    for (const [key, value] of Object.entries(element.attributes)) {
-        newEl.setAttribute(key, value);
-    }
+    const newEl = createElement(element);
 
     switch (location.position) {
         case InsertPos.APPEND:
@@ -91,7 +88,22 @@ export function insertElement(
     return domEl;
 }
 
-export function removeElement(location: ActionElementLocation): DomElement | null {
+function createElement(element: ActionElement) {
+    const newEl = document.createElement(element.tagName);
+    for (const [key, value] of Object.entries(element.attributes)) {
+        newEl.setAttribute(key, value);
+    }
+    newEl.textContent = element.textContent;
+
+    for (const child of element.children) {
+        const childEl = createElement(child);
+        newEl.appendChild(childEl);
+    }
+
+    return newEl;
+}
+
+export function removeElement(location: ActionElementLocation, hide = true): DomElement | null {
     const targetEl = document.querySelector(location.targetSelector) as HTMLElement | null;
 
     if (!targetEl) {
@@ -129,7 +141,11 @@ export function removeElement(location: ActionElementLocation): DomElement | nul
 
     if (elementToRemove) {
         const domEl = getDomElement(elementToRemove, true);
-        elementToRemove.remove();
+        if (hide) {
+            elementToRemove.style.display = 'none';
+        } else {
+            elementToRemove.remove();
+        }
         return domEl;
     } else {
         console.warn(`No element found to remove at the specified location`);

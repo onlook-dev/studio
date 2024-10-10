@@ -28,19 +28,13 @@ function undoAction(action: Action): Action {
             };
         case 'insert-element':
             return {
+                ...action,
                 type: 'remove-element',
-                targets: action.targets,
-                location: action.location,
-                element: action.element,
-                styles: action.styles,
             };
         case 'remove-element':
             return {
+                ...action,
                 type: 'insert-element',
-                targets: action.targets,
-                location: action.location,
-                element: action.element,
-                styles: action.styles,
             };
         case 'move-element':
             return {
@@ -113,9 +107,7 @@ export class HistoryManager {
         }
 
         const actionToCommit = this.inTransaction.action;
-
         this.inTransaction = { type: TransactionType.NOT_IN_TRANSACTION };
-
         this.push(actionToCommit);
     };
 

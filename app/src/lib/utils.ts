@@ -6,10 +6,6 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export function assertNever(n: never): never {
-    throw new Error(`Expected \`never\`, found: ${JSON.stringify(n)}`);
-}
-
 export function sendAnalytics(event: string, data?: Record<string, any>) {
     window.api.send(MainChannels.SEND_ANALYTICS, { event, data });
 }

@@ -72,6 +72,8 @@ const NumberUnitInput = observer(
                     }
                     onChange={handleNumberInputChange}
                     className="w-full p-[6px] px-2 rounded border-none text-text-active bg-bg/75 text-start focus:outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    onFocus={editorEngine.history.startTransaction}
+                    onBlur={editorEngine.history.commitTransaction}
                 />
             );
         };

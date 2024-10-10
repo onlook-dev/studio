@@ -13,6 +13,7 @@ import {
     SunIcon,
 } from '@radix-ui/react-icons';
 import clsx from 'clsx';
+import { useEffect, useState } from 'react';
 import { Links } from '/common/constants';
 
 interface BrowserControlsProps {
@@ -38,6 +39,11 @@ function BrowserControls({
     setDarkmode,
     onlookEnabled,
 }: BrowserControlsProps) {
+    const [urlInputValue, setUrlInputValue] = useState(webviewSrc);
+    useEffect(() => {
+        setUrlInputValue(webviewSrc);
+    }, [webviewSrc]);
+
     function goForward() {
         const webview = webviewRef.current as Electron.WebviewTag | null;
         if (!webview) {
@@ -73,20 +79,23 @@ function BrowserControls({
         return url;
     }
 
-    function updateUrl(e: React.KeyboardEvent<HTMLInputElement>) {
-        if (e.key !== 'Enter') {
+    function handleKeydown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key === 'Enter') {
+            e.currentTarget.blur();
             return;
         }
+    }
 
+    function handleBlur(e: React.FocusEvent<HTMLInputElement>) {
         const webview = webviewRef.current as Electron.WebviewTag | null;
         if (!webview) {
             return;
         }
 
-        const validUrl = getValidUrl(webviewSrc);
+        const validUrl = getValidUrl(e.currentTarget.value);
         webview.src = validUrl;
         webview.loadURL(validUrl);
-        e.currentTarget.blur();
+        setWebviewSrc(validUrl);
     }
 
     function toggleTheme() {
@@ -119,9 +128,10 @@ function BrowserControls({
             </Button>
             <Input
                 className="text-regularPlus"
-                value={webviewSrc}
-                onChange={(e) => setWebviewSrc(e.target.value)}
-                onKeyDown={updateUrl}
+                value={urlInputValue}
+                onChange={(e) => setUrlInputValue(e.target.value)}
+                onKeyDown={handleKeydown}
+                onBlur={handleBlur}
             />
             <Button variant="outline" className="bg-transparent" size="icon" onClick={toggleTheme}>
                 {darkmode ? <MoonIcon /> : <SunIcon />}

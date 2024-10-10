@@ -1,4 +1,4 @@
-import { assertNever, sendAnalytics } from '@/lib/utils';
+import { sendAnalytics } from '@/lib/utils';
 import { EditorEngine } from '..';
 import {
     Action,
@@ -9,6 +9,7 @@ import {
     UpdateStyleAction,
 } from '/common/actions';
 import { WebviewChannels } from '/common/constants';
+import { assertNever } from '/common/helpers';
 
 export class ActionManager {
     constructor(private editorEngine: EditorEngine) {}
@@ -90,13 +91,13 @@ export class ActionManager {
         });
     }
 
-    private removeElement({ targets }: RemoveElementAction) {
-        targets.forEach((elementMetadata) => {
-            const webview = this.editorEngine.webviews.getWebview(elementMetadata.webviewId);
+    private removeElement({ targets, location, codeBlock }: RemoveElementAction) {
+        targets.forEach((target) => {
+            const webview = this.editorEngine.webviews.getWebview(target.webviewId);
             if (!webview) {
                 return;
             }
-            const payload = JSON.parse(JSON.stringify({ location }));
+            const payload = JSON.parse(JSON.stringify({ location, hide: codeBlock !== undefined }));
             webview.send(WebviewChannels.REMOVE_ELEMENT, payload);
         });
     }

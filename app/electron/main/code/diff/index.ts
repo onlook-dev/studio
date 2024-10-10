@@ -11,27 +11,25 @@ interface RequestsByPath {
     codeBlock: string;
 }
 
-export async function getCodeDiffs(
-    templateToCodeDiff: Map<TemplateNode, CodeDiffRequest>,
-): Promise<CodeDiff[]> {
-    const groupedRequests = await groupRequestsByTemplatePath(templateToCodeDiff);
+export async function getCodeDiffs(requests: CodeDiffRequest[]): Promise<CodeDiff[]> {
+    const groupedRequests = await groupRequestsByTemplatePath(requests);
     return processGroupedRequests(groupedRequests);
 }
 
 async function groupRequestsByTemplatePath(
-    templateToCodeDiff: Map<TemplateNode, CodeDiffRequest>,
+    requests: CodeDiffRequest[],
 ): Promise<Map<string, RequestsByPath>> {
     const groupedRequests: Map<string, RequestsByPath> = new Map();
 
-    for (const [templateNode, request] of templateToCodeDiff) {
-        const codeBlock = await readFile(templateNode.path);
-        const path = templateNode.path;
+    for (const request of requests) {
+        const codeBlock = await readFile(request.templateNode.path);
+        const path = request.templateNode.path;
 
         let groupedRequest = groupedRequests.get(path);
         if (!groupedRequest) {
             groupedRequest = { templateToCodeDiff: new Map(), codeBlock };
         }
-        groupedRequest.templateToCodeDiff.set(templateNode, request);
+        groupedRequest.templateToCodeDiff.set(request.templateNode, request);
         groupedRequests.set(path, groupedRequest);
     }
 
